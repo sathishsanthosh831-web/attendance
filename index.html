@@ -4,15 +4,16 @@
   <title>Attendance System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
- .hidden { display: none; }
- .box { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    body { font-family: Arial; padding: 20px; background: #f5f5f5; text-align: center; }
+.hidden { display: none; }
+.box { background: white; padding: 20px; border-radius: 8px; margin: 10px auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px; }
+   .main-btn { display: block; width: 250px; margin: 15px auto; padding: 15px; font-size: 18px; }
     button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; background: #4CAF50; color: white; cursor: pointer; font-size: 14px; }
     button:hover { background: #45a049; }
- .danger { background: #f44336; }
- .danger:hover { background: #da190b; }
- .blue { background: #2196F3; }
- .blue:hover { background: #0b7dda; }
+.danger { background: #f44336; }
+.danger:hover { background: #da190b; }
+.blue { background: #2196F3; }
+.blue:hover { background: #0b7dda; }
     input { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; width: 220px; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
@@ -23,14 +24,14 @@
 </head>
 <body>
 
-  <!-- MAIN PAGE -->
+  <!-- HOME PAGE: ADMIN MELA, STUDENT KEELA -->
   <div id="homePage" class="box">
     <h2>Attendance System</h2>
-    <button onclick="showAdminLogin()">Admin</button>
-    <button onclick="showStudentLogin()" class="blue">Student</button>
+    <button class="main-btn" onclick="showAdminLogin()">Admin</button>
+    <button class="main-btn blue" onclick="showStudentLogin()">Student</button>
   </div>
 
-  <!-- ADMIN LOGIN -->
+  <!-- ADMIN LOGIN PAGE -->
   <div id="adminLoginPage" class="box hidden">
     <h3>Admin Login</h3>
     <input id="adminUser" placeholder="Username"><br>
@@ -59,21 +60,21 @@
     </div>
   </div>
 
-  <!-- STUDENT LOGIN -->
+  <!-- STUDENT LOGIN/PAGE - NAME + ROLL POTTA ATTENDANCE VARUM -->
   <div id="studentLoginPage" class="box hidden">
-    <h3>Check Attendance</h3>
+    <h3>Check Your Attendance</h3>
     <input id="checkName" placeholder="Your Name"><br>
     <input id="checkRoll" placeholder="Your Roll Number"><br>
-    <button onclick="checkAttendance()" class="blue">Check</button>
+    <button onclick="checkAttendance()" class="blue">Check Attendance</button>
     <button onclick="goHome()" class="danger">Back</button>
-    <div id="studentResult" class="box hidden" style="margin-top:15px"></div>
+    <div id="studentResult" class="box hidden" style="margin-top:15px; text-align:left;"></div>
   </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getDatabase, ref, set, onValue, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  // FIREBASE CONFIG - IDHA UNNODADHU AH MAATHU DA
+  // FIREBASE CONFIG - IDHA MAATHU DA
   const firebaseConfig = {
     apiKey: "UN_API_KEY",
     authDomain: "UN_AUTH_DOMAIN",
@@ -87,7 +88,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // ADMIN LOGIN DETAILS - IDHA MAATHIKO DA
+  // ADMIN LOGIN DETAILS - MAATHIKO
   const ADMIN_USER = "admin";
   const ADMIN_PASS = "admin123";
 
@@ -112,7 +113,7 @@
     document.getElementById('studentResult').classList.add('hidden');
   }
 
-  // ADMIN LOGIN
+  // ADMIN LOGIN - NEXT PAGE KU POGUM
   window.adminLogin = () => {
     const user = document.getElementById('adminUser').value;
     const pass = document.getElementById('adminPass').value;
@@ -147,7 +148,7 @@
     });
   }
 
-  // LOAD STUDENTS TABLE
+  // LOAD STUDENTS
   function loadStudents() {
     const studentsRef = ref(db, 'students');
     onValue(studentsRef, (snapshot) => {
@@ -184,14 +185,13 @@
     });
   }
 
-  // DELETE STUDENT - CONFIRM KETU DELETE PANNU
+  // DELETE STUDENT WITH CONFIRM
   window.deleteStudent = (roll, name) => {
     const confirmDelete = confirm(`Dei sure ah ${name} - ${roll} ah delete pannanuma? \n\nAttendance data um poidum!`);
 
     if(confirmDelete) {
       const studentRef = ref(db, 'students/' + roll);
       remove(studentRef).then(() => {
-        // Andha student oda attendance um delete pannu
         const attRef = ref(db, 'attendance');
         get(attRef).then((snapshot) => {
           const allAtt = snapshot.val();
@@ -204,13 +204,11 @@
           }
         });
         alert(`${name} delete panniten da`);
-      }).catch((err) => {
-        alert("Delete panna mudiyala da: " + err);
       });
     }
   }
 
-  // STUDENT CHECK ATTENDANCE
+  // STUDENT CHECK ATTENDANCE - NAME + ROLL POTTALE COUNT VARUM
   window.checkAttendance = async () => {
     const name = document.getElementById('checkName').value.trim();
     const roll = document.getElementById('checkRoll').value.trim();
