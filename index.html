@@ -1,254 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="ta">
 <head>
-  <title>Attendance System</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance System</title>
   <style>
-    body { font-family: Arial; padding: 20px; background: #f5f5f5; text-align: center; }
-.hidden { display: none; }
-.box { background: white; padding: 20px; border-radius: 8px; margin: 10px auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px; }
-   .main-btn { display: block; width: 250px; margin: 15px auto; padding: 15px; font-size: 18px; }
-    button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; background: #4CAF50; color: white; cursor: pointer; font-size: 14px; }
-    button:hover { background: #45a049; }
-.danger { background: #f44336; }
-.danger:hover { background: #da190b; }
-.blue { background: #2196F3; }
-.blue:hover { background: #0b7dda; }
-    input { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; width: 220px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background: #4CAF50; color: white; }
-    td button { padding: 6px 10px; font-size: 12px; margin: 2px; }
-    h2, h3, h4 { margin: 10px 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+   .box {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+      max-width: 450px;
+      width: 100%;
+    }
+    h1 { color: #333; margin-bottom: 10px; text-align: center; }
+   .date { color: #666; text-align: center; margin-bottom: 25px; font-size: 14px; }
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    input:focus { outline: none; border-color: #667eea; }
+    button {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: 0.3s;
+    }
+    button:hover { background: #5568d3; transform: scale(1.02); }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    #msg {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 15px;
+      display: none;
+    }
+   .success { background: #d4edda; color: #155724; display: block!important; }
+   .error { background: #f8d7da; color: #721c24; display: block!important; }
+   .icon { font-size: 50px; text-align: center; margin-bottom: 15px; }
   </style>
 </head>
 <body>
+  <div class="box">
+    <div class="icon">📋</div>
+    <h1>Attendance Mark Pannu</h1>
+    <div class="date" id="date">Loading...</div>
 
-  <!-- HOME PAGE: ADMIN MELA, STUDENT KEELA -->
-  <div id="homePage" class="box">
-    <h2>Attendance System</h2>
-    <button class="main-btn" onclick="showAdminLogin()">Admin</button>
-    <button class="main-btn blue" onclick="showStudentLogin()">Student</button>
+    <input type="text" id="name" placeholder="Un Name" autocomplete="off">
+    <input type="text" id="roll" placeholder="Roll Number" autocomplete="off">
+    <button id="markBtn" onclick="markAttendance()">Present Podu ✅</button>
+
+    <div id="msg"></div>
   </div>
 
-  <!-- ADMIN LOGIN PAGE -->
-  <div id="adminLoginPage" class="box hidden">
-    <h3>Admin Login</h3>
-    <input id="adminUser" placeholder="Username"><br>
-    <input id="adminPass" type="password" placeholder="Password"><br>
-    <button onclick="adminLogin()">Login</button>
-    <button onclick="goHome()" class="danger">Back</button>
-  </div>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
-  <!-- ADMIN DASHBOARD -->
-  <div id="adminPage" class="box hidden">
-    <h3>Admin Dashboard <button onclick="adminLogout()" class="danger" style="float:right">Logout</button></h3>
+    // Un Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJQwlKiwx7Qtcp8d46QQd9gkHfsVX5j20",
+      authDomain: "atte-73d96.firebaseapp.com",
+      databaseURL: "https://atte-73d96-default-rtdb.firebaseio.com",
+      projectId: "atte-73d96",
+      storageBucket: "atte-73d96.firebasestorage.app",
+      messagingSenderId: "286212566095",
+      appId: "1:286212566095:web:ba1177cca497de36968e3a",
+      measurementId: "G-BCX84PH05W"
+    };
 
-    <div class="box">
-      <h4>Add Student</h4>
-      <input id="studentName" placeholder="Student Name">
-      <input id="studentRoll" placeholder="Roll Number">
-      <button onclick="addStudent()">Add Student</button>
-    </div>
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getDatabase(app);
 
-    <div class="box">
-      <h4>Mark Attendance</h4>
-      <input type="date" id="attDate">
-      <table id="studentTable">
-        <tr><th>Name</th><th>Roll No</th><th>Action</th></tr>
-      </table>
-    </div>
-  </div>
-
-  <!-- STUDENT LOGIN/PAGE - NAME + ROLL POTTA ATTENDANCE VARUM -->
-  <div id="studentLoginPage" class="box hidden">
-    <h3>Check Your Attendance</h3>
-    <input id="checkName" placeholder="Your Name"><br>
-    <input id="checkRoll" placeholder="Your Roll Number"><br>
-    <button onclick="checkAttendance()" class="blue">Check Attendance</button>
-    <button onclick="goHome()" class="danger">Back</button>
-    <div id="studentResult" class="box hidden" style="margin-top:15px; text-align:left;"></div>
-  </div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, set, onValue, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-  // FIREBASE CONFIG - IDHA MAATHU DA
-  const firebaseConfig = {
-    apiKey: "UN_API_KEY",
-    authDomain: "UN_AUTH_DOMAIN",
-    databaseURL: "UN_DATABASE_URL",
-    projectId: "UN_PROJECT_ID",
-    storageBucket: "UN_STORAGE_BUCKET",
-    messagingSenderId: "UN_SENDER_ID",
-    appId: "UN_APP_ID"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  // ADMIN LOGIN DETAILS - MAATHIKO
-  const ADMIN_USER = "admin";
-  const ADMIN_PASS = "admin123";
-
-  // PAGE NAVIGATION
-  window.showAdminLogin = () => {
-    document.getElementById('homePage').classList.add('hidden');
-    document.getElementById('adminLoginPage').classList.remove('hidden');
-  }
-
-  window.showStudentLogin = () => {
-    document.getElementById('homePage').classList.add('hidden');
-    document.getElementById('studentLoginPage').classList.remove('hidden');
-  }
-
-  window.goHome = () => {
-    document.querySelectorAll('.box').forEach(el => el.classList.add('hidden'));
-    document.getElementById('homePage').classList.remove('hidden');
-    document.getElementById('adminUser').value = '';
-    document.getElementById('adminPass').value = '';
-    document.getElementById('checkName').value = '';
-    document.getElementById('checkRoll').value = '';
-    document.getElementById('studentResult').classList.add('hidden');
-  }
-
-  // ADMIN LOGIN - NEXT PAGE KU POGUM
-  window.adminLogin = () => {
-    const user = document.getElementById('adminUser').value;
-    const pass = document.getElementById('adminPass').value;
-    if(user === ADMIN_USER && pass === ADMIN_PASS) {
-      document.getElementById('adminLoginPage').classList.add('hidden');
-      document.getElementById('adminPage').classList.remove('hidden');
-      loadStudents();
-      document.getElementById('attDate').valueAsDate = new Date();
-    } else {
-      alert("Username Password thappu da");
-    }
-  }
-
-  window.adminLogout = () => {
-    goHome();
-  }
-
-  // ADD STUDENT
-  window.addStudent = () => {
-    const name = document.getElementById('studentName').value.trim();
-    const roll = document.getElementById('studentRoll').value.trim();
-    if(!name ||!roll) return alert("Name and Roll number podu da");
-
-    const studentsRef = ref(db, 'students/' + roll);
-    set(studentsRef, {
-      name: name,
-      rollno: roll
-    }).then(() => {
-      alert("Student add aayitan da");
-      document.getElementById('studentName').value = '';
-      document.getElementById('studentRoll').value = '';
+    // Date kaatu
+    document.getElementById('date').innerText = new Date().toLocaleDateString('en-IN', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
-  }
 
-  // LOAD STUDENTS
-  function loadStudents() {
-    const studentsRef = ref(db, 'students');
-    onValue(studentsRef, (snapshot) => {
-      const data = snapshot.val();
-      const table = document.getElementById('studentTable');
-      table.innerHTML = '<tr><th>Name</th><th>Roll No</th><th>Action</th></tr>';
+    // Attendance Mark Panna Function
+    window.markAttendance = async function() {
+      const name = document.getElementById('name').value.trim();
+      const roll = document.getElementById('roll').value.trim();
+      const msg = document.getElementById('msg');
+      const btn = document.getElementById('markBtn');
 
-      if(data) {
-        for(let roll in data) {
-          let s = data;
-          table.innerHTML += `
-            <tr>
-              <td>${s.name}</td>
-              <td>${s.rollno}</td>
-              <td>
-                <button onclick="markAtt('${s.rollno}', 'present')">Present</button>
-                <button onclick="markAtt('${s.rollno}', 'absent')" class="danger">Absent</button>
-                <button onclick="deleteStudent('${s.rollno}', '${s.name}')" class="danger">Delete</button>
-              </td>
-            </tr>`;
-        }
+      if (!name ||!roll) {
+        msg.className = 'error';
+        msg.innerText = '❌ Name & Roll Number podu da';
+        return;
       }
-    });
-  }
 
-  // MARK ATTENDANCE
-  window.markAtt = (roll, status) => {
-    const date = document.getElementById('attDate').value;
-    if(!date) return alert("Date select pannu da");
+      btn.disabled = true;
+      btn.innerText = 'Saving...';
 
-    const attRef = ref(db, `attendance/${date}/${roll}`);
-    set(attRef, status).then(() => {
-      alert(`${roll} ku ${status} mark panniten da`);
-    });
-  }
+      try {
+        const today = new Date().toISOString().split('T')[0]; // 2026-06-24
+        const attendanceRef = ref(db, `attendance/${today}/${roll}`);
 
-  // DELETE STUDENT WITH CONFIRM
-  window.deleteStudent = (roll, name) => {
-    const confirmDelete = confirm(`Dei sure ah ${name} - ${roll} ah delete pannanuma? \n\nAttendance data um poidum!`);
-
-    if(confirmDelete) {
-      const studentRef = ref(db, 'students/' + roll);
-      remove(studentRef).then(() => {
-        const attRef = ref(db, 'attendance');
-        get(attRef).then((snapshot) => {
-          const allAtt = snapshot.val();
-          if(allAtt) {
-            for(let date in allAtt) {
-              if(allAtt[date] && allAtt[date]) {
-                remove(ref(db, `attendance/${date}/${roll}`));
-              }
-            }
-          }
+        await set(attendanceRef, {
+          name: name,
+          rollNo: roll,
+          timestamp: new Date().toISOString(),
+          time: new Date().toLocaleTimeString('en-IN'),
+          status: 'Present'
         });
-        alert(`${name} delete panniten da`);
-      });
-    }
-  }
 
-  // STUDENT CHECK ATTENDANCE - NAME + ROLL POTTALE COUNT VARUM
-  window.checkAttendance = async () => {
-    const name = document.getElementById('checkName').value.trim();
-    const roll = document.getElementById('checkRoll').value.trim();
-    if(!name ||!roll) return alert("Name and Roll number podu da");
+        msg.className = 'success';
+        msg.innerText = `✅ ${name} - Attendance marked da!`;
+        document.getElementById('name').value = '';
+        document.getElementById('roll').value = '';
 
-    const studentSnap = await get(ref(db, 'students/' + roll));
-    if(!studentSnap.exists()) {
-      return alert("Student illa da. Roll number check pannu");
-    }
-    if(studentSnap.val().name.toLowerCase()!== name.toLowerCase()) {
-      return alert("Name Roll number match aagala da");
-    }
-
-    const attSnap = await get(ref(db, 'attendance'));
-    const attData = attSnap.val();
-    let totalDays = 0, presentDays = 0;
-
-    if(attData) {
-      for(let date in attData) {
-        if(attData[date] && attData[date]) {
-          totalDays++;
-          if(attData[date] === 'present') presentDays++;
-        }
+      } catch (e) {
+        msg.className = 'error';
+        msg.innerText = '❌ Error: ' + e.message;
       }
+
+      btn.disabled = false;
+      btn.innerText = 'Present Podu ✅';
     }
-
-    const percent = totalDays > 0? ((presentDays/totalDays) * 100).toFixed(1) : 0;
-    const resultDiv = document.getElementById('studentResult');
-    resultDiv.classList.remove('hidden');
-    resultDiv.innerHTML = `
-      <h4>Attendance Report</h4>
-      <p><b>Name:</b> ${name}</p>
-      <p><b>Roll No:</b> ${roll}</p>
-      <p><b>Total Working Days:</b> ${totalDays}</p>
-      <p><b>Present:</b> ${presentDays}</p>
-      <p><b>Absent:</b> ${totalDays - presentDays}</p>
-      <p><b>Percentage:</b> ${percent}%</p>
-    `;
-  }
-</script>
-
+  </script>
 </body>
 </html>
