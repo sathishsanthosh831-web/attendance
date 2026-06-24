@@ -10,29 +10,40 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       padding: 20px;
     }
+   .container { max-width: 1000px; margin: 0 auto; }
+   .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+   .tab {
+      padding: 12px 25px;
+      background: rgba(255,255,255,0.3);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+    }
+   .tab.active { background: white; color: #667eea; }
    .box {
       background: white;
-      padding: 40px 30px;
+      padding: 30px;
       border-radius: 20px;
       box-shadow: 0 15px 50px rgba(0,0,0,0.3);
-      max-width: 450px;
-      width: 100%;
     }
     h1 { color: #333; margin-bottom: 10px; text-align: center; }
    .date { color: #666; text-align: center; margin-bottom: 25px; font-size: 14px; }
-    input {
+    input, select {
       width: 100%;
       padding: 14px;
       margin: 10px 0;
       border: 2px solid #e0e0e0;
       border-radius: 10px;
       font-size: 16px;
-      transition: 0.3s;
     }
     input:focus { outline: none; border-color: #667eea; }
     button {
@@ -46,43 +57,114 @@
       border-radius: 10px;
       cursor: pointer;
       margin-top: 15px;
-      transition: 0.3s;
     }
-    button:hover { background: #5568d3; transform: scale(1.02); }
+    button:hover:not(:disabled) { background: #5568d3; }
     button:disabled { background: #ccc; cursor: not-allowed; }
     #msg {
       margin-top: 20px;
       padding: 12px;
       border-radius: 8px;
       text-align: center;
-      font-size: 15px;
       display: none;
     }
    .success { background: #d4edda; color: #155724; display: block!important; }
    .error { background: #f8d7da; color: #721c24; display: block!important; }
-   .icon { font-size: 50px; text-align: center; margin-bottom: 15px; }
+   .warning { background: #fff3cd; color: #856404; display: block!important; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    th { background: #f5f5f5; font-weight: bold; }
+   .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+   .stat-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+   .stat-card h3 { font-size: 32px; color: #667eea; }
+   .stat-card p { color: #666; margin-top: 5px; }
+   .hidden { display: none; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <div class="icon">📋</div>
-    <h1>Attendance Mark Pannu</h1>
-    <div class="date" id="date">Loading...</div>
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('student')">👨‍🎓 Student</button>
+      <button class="tab" onclick="showTab('admin')">👨‍💼 Admin</button>
+    </div>
 
-    <input type="text" id="name" placeholder="Un Name" autocomplete="off">
-    <input type="text" id="roll" placeholder="Roll Number" autocomplete="off">
-    <button id="markBtn" onclick="markAttendance()">Present Podu ✅</button>
+    <!-- STUDENT PAGE -->
+    <div id="studentPage" class="box">
+      <h1>📋 Attendance Mark Pannu</h1>
+      <div class="date" id="studentDate">Loading...</div>
 
-    <div id="msg"></div>
+      <input type="text" id="name" placeholder="Un Name" autocomplete="off">
+      <input type="text" id="roll" placeholder="Roll Number" autocomplete="off">
+      <button id="markBtn" onclick="markAttendance()">Present Podu ✅</button>
+
+      <div id="msg"></div>
+    </div>
+
+    <!-- ADMIN PAGE -->
+    <div id="adminPage" class="box hidden">
+      <h1>📊 Admin Dashboard</h1>
+      <div class="date" id="adminDate">Loading...</div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <h3 id="totalCount">0</h3>
+          <p>Total Present</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="onTimeCount">0</h3>
+          <p>On Time</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="lateCount">0</h3>
+          <p>Late</p>
+        </div>
+      </div>
+
+      <button onclick="loadAttendance()">🔄 Refresh List</button>
+      <button onclick="downloadCSV()">📥 Download CSV</button>
+
+      <table id="attendanceTable">
+        <thead>
+          <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="4" style="text-align:center;">Refresh pannu da</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
-    // Un Firebase Config
+    // ===== CONFIG =====
+    const CUT_OFF_HOUR = 9; // 9 AM
+    const CUT_OFF_MINUTE = 30; // 9:30 AM ku munnadi = On Time
+
     const firebaseConfig = {
       apiKey: "AIzaSyCJQwlKiwx7Qtcp8d46QQd9gkHfsVX5j20",
       authDomain: "atte-73d96.firebaseapp.com",
@@ -94,17 +176,33 @@
       measurementId: "G-BCX84PH05W"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getDatabase(app);
 
-    // Date kaatu
-    document.getElementById('date').innerText = new Date().toLocaleDateString('en-IN', {
+    // Date set pannu
+    const today = new Date().toISOString().split('T')[0];
+    const dateStr = new Date().toLocaleDateString('en-IN', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
+    document.getElementById('studentDate').innerText = dateStr;
+    document.getElementById('adminDate').innerText = dateStr;
 
-    // Attendance Mark Panna Function
+    // Tab switch
+    window.showTab = function(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.box').forEach(b => b.classList.add('hidden'));
+
+      if (tab === 'student') {
+        document.querySelectorAll('.tab')[0].classList.add('active');
+        document.getElementById('studentPage').classList.remove('hidden');
+      } else {
+        document.querySelectorAll('.tab')[1].classList.add('active');
+        document.getElementById('adminPage').classList.remove('hidden');
+        loadAttendance();
+      }
+    }
+
+    // Attendance Mark Pannu
     window.markAttendance = async function() {
       const name = document.getElementById('name').value.trim();
       const roll = document.getElementById('roll').value.trim();
@@ -118,22 +216,38 @@
       }
 
       btn.disabled = true;
-      btn.innerText = 'Saving...';
+      btn.innerText = 'Checking...';
 
       try {
-        const today = new Date().toISOString().split('T')[0]; // 2026-06-24
-        const attendanceRef = ref(db, `attendance/${today}/${roll}`);
+        // Already marked ah nu check pannu
+        const checkRef = ref(db, `attendance/${today}/${roll}`);
+        const snapshot = await get(checkRef);
 
-        await set(attendanceRef, {
+        if (snapshot.exists()) {
+          msg.className = 'warning';
+          msg.innerText = '⚠️ Already marked da! ' + snapshot.val().time;
+          btn.disabled = false;
+          btn.innerText = 'Present Podu ✅';
+          return;
+        }
+
+        // Time check pannu - Late ah illa On time ah
+        const now = new Date();
+        const cutOff = new Date();
+        cutOff.setHours(CUT_OFF_HOUR, CUT_OFF_MINUTE, 0, 0);
+        const status = now <= cutOff? 'On Time' : 'Late';
+
+        // Save pannu
+        await set(checkRef, {
           name: name,
           rollNo: roll,
-          timestamp: new Date().toISOString(),
-          time: new Date().toLocaleTimeString('en-IN'),
-          status: 'Present'
+          timestamp: now.toISOString(),
+          time: now.toLocaleTimeString('en-IN'),
+          status: status
         });
 
         msg.className = 'success';
-        msg.innerText = `✅ ${name} - Attendance marked da!`;
+        msg.innerText = `✅ ${name} - ${status} ah marked da!`;
         document.getElementById('name').value = '';
         document.getElementById('roll').value = '';
 
@@ -144,6 +258,83 @@
 
       btn.disabled = false;
       btn.innerText = 'Present Podu ✅';
+    }
+
+    // Admin - Load Attendance
+    window.loadAttendance = async function() {
+      const tableBody = document.getElementById('tableBody');
+      tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
+
+      try {
+        const dbRef = ref(db);
+        const snapshot = await get(child(dbRef, `attendance/${today}`));
+
+        if (!snapshot.exists()) {
+          tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Innum yaarum mark pannala da</td></tr>';
+          updateStats(0, 0, 0);
+          return;
+        }
+
+        const data = snapshot.val();
+        let rows = '';
+        let total = 0, onTime = 0, late = 0;
+
+        Object.values(data).forEach(rec => {
+          total++;
+          if (rec.status === 'On Time') onTime++;
+          else late++;
+
+          rows += `
+            <tr>
+              <td>${rec.rollNo}</td>
+              <td>${rec.name}</td>
+              <td>${rec.time}</td>
+              <td>${rec.status === 'On Time'? '✅' : '⚠️'} ${rec.status}</td>
+            </tr>
+          `;
+        });
+
+        tableBody.innerHTML = rows;
+        updateStats(total, onTime, late);
+
+      } catch (e) {
+        tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Error: ${e.message}</td></tr>`;
+      }
+    }
+
+    function updateStats(total, onTime, late) {
+      document.getElementById('totalCount').innerText = total;
+      document.getElementById('onTimeCount').innerText = onTime;
+      document.getElementById('lateCount').innerText = late;
+    }
+
+    // CSV Download
+    window.downloadCSV = async function() {
+      try {
+        const dbRef = ref(db);
+        const snapshot = await get(child(dbRef, `attendance/${today}`));
+
+        if (!snapshot.exists()) {
+          alert('Data illa da');
+          return;
+        }
+
+        const data = Object.values(snapshot.val());
+        let csv = 'Roll No,Name,Time,Status\n';
+        data.forEach(r => {
+          csv += `${r.rollNo},${r.name},${r.time},${r.status}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `attendance_${today}.csv`;
+        a.click();
+
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
     }
   </script>
 </body>
