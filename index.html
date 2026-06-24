@@ -1,341 +1,207 @@
 <!DOCTYPE html>
-<html lang="ta">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attendance System</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
-   .container { max-width: 1000px; margin: 0 auto; }
-   .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-   .tab {
-      padding: 12px 25px;
-      background: rgba(255,255,255,0.3);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 16px;
-    }
-   .tab.active { background: white; color: #667eea; }
-   .box {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 15px 50px rgba(0,0,0,0.3);
-    }
-    h1 { color: #333; margin-bottom: 10px; text-align: center; }
-   .date { color: #666; text-align: center; margin-bottom: 25px; font-size: 14px; }
-    input, select {
-      width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 16px;
-    }
-    input:focus { outline: none; border-color: #667eea; }
-    button {
-      width: 100%;
-      padding: 15px;
-      font-size: 18px;
-      font-weight: bold;
-      background: #667eea;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-    button:hover:not(:disabled) { background: #5568d3; }
-    button:disabled { background: #ccc; cursor: not-allowed; }
-    #msg {
-      margin-top: 20px;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-      display: none;
-    }
-   .success { background: #d4edda; color: #155724; display: block!important; }
-   .error { background: #f8d7da; color: #721c24; display: block!important; }
-   .warning { background: #fff3cd; color: #856404; display: block!important; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    th { background: #f5f5f5; font-weight: bold; }
-   .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin: 20px 0;
-    }
-   .stat-card {
-      background: #f8f9fa;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-    }
-   .stat-card h3 { font-size: 32px; color: #667eea; }
-   .stat-card p { color: #666; margin-top: 5px; }
-   .hidden { display: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        h1 { color: #333; margin-bottom: 30px; }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .student-btn { background: #4CAF50; color: white; }
+        .student-btn:hover { background: #45a049; transform: scale(1.05); }
+        .admin-btn { background: #2196F3; color: white; }
+        .admin-btn:hover { background: #0b7dda; transform: scale(1.05); }
+        .form-section { display: none; margin-top: 20px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .submit-btn { background: #ff5722; color: white; }
+        .back-btn { background: #9e9e9e; color: white; }
+        .status { margin-top: 15px; font-weight: bold; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="tabs">
-      <button class="tab active" onclick="showTab('student')">👨‍🎓 Student</button>
-      <button class="tab" onclick="showTab('admin')">👨‍💼 Admin</button>
+    <div class="container">
+        <h1>Attendance System</h1>
+        
+        <div id="homeSection">
+            <button class="student-btn" id="studentBtn">Student Login</button>
+            <button class="admin-btn" id="adminBtn">Admin Login</button>
+        </div>
+
+        <div id="studentSection" class="form-section">
+            <h2>Student Attendance</h2>
+            <input type="text" id="studentName" placeholder="Your Name">
+            <input type="text" id="studentRoll" placeholder="Roll Number">
+            <button class="submit-btn" id="markAttendance">Mark Attendance</button>
+            <button class="back-btn" id="backFromStudent">Back</button>
+            <div id="studentStatus" class="status"></div>
+        </div>
+
+        <div id="adminSection" class="form-section">
+            <h2>Admin Panel</h2>
+            <input type="password" id="adminPass" placeholder="Admin Password">
+            <button class="submit-btn" id="viewAttendance">View All Attendance</button>
+            <button class="back-btn" id="backFromAdmin">Back</button>
+            <div id="adminStatus" class="status"></div>
+            <div id="attendanceList"></div>
+        </div>
     </div>
 
-    <!-- STUDENT PAGE -->
-    <div id="studentPage" class="box">
-      <h1>📋 Attendance Mark Pannu</h1>
-      <div class="date" id="studentDate">Loading...</div>
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-      <input type="text" id="name" placeholder="Un Name" autocomplete="off">
-      <input type="text" id="roll" placeholder="Roll Number" autocomplete="off">
-      <button id="markBtn" onclick="markAttendance()">Present Podu ✅</button>
+        // UN CONFIG - Idha maatha vendam, un project dhan
+        const firebaseConfig = {
+            apiKey: "AIzaSyC...", // Config la irundhu copy pannu
+            authDomain: "atte-73d96.firebaseapp.com",
+            databaseURL: "https://atte-73d96-default-rtdb.firebaseio.com", // ✅ Un URL
+            projectId: "atte-73d96",
+            storageBucket: "atte-73d96.appspot.com",
+            messagingSenderId: "286212566095",
+            appId: "1:286212566095:web:be1177cca497de36968e3a"
+        };
 
-      <div id="msg"></div>
-    </div>
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
-    <!-- ADMIN PAGE -->
-    <div id="adminPage" class="box hidden">
-      <h1>📊 Admin Dashboard</h1>
-      <div class="date" id="adminDate">Loading...</div>
+        // UI Elements
+        const homeSection = document.getElementById('homeSection');
+        const studentSection = document.getElementById('studentSection');
+        const adminSection = document.getElementById('adminSection');
 
-      <div class="stats">
-        <div class="stat-card">
-          <h3 id="totalCount">0</h3>
-          <p>Total Present</p>
-        </div>
-        <div class="stat-card">
-          <h3 id="onTimeCount">0</h3>
-          <p>On Time</p>
-        </div>
-        <div class="stat-card">
-          <h3 id="lateCount">0</h3>
-          <p>Late</p>
-        </div>
-      </div>
-
-      <button onclick="loadAttendance()">🔄 Refresh List</button>
-      <button onclick="downloadCSV()">📥 Download CSV</button>
-
-      <table id="attendanceTable">
-        <thead>
-          <tr>
-            <th>Roll No</th>
-            <th>Name</th>
-            <th>Time</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody">
-          <tr><td colspan="4" style="text-align:center;">Refresh pannu da</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
-
-    // ===== CONFIG =====
-    const CUT_OFF_HOUR = 9; // 9 AM
-    const CUT_OFF_MINUTE = 30; // 9:30 AM ku munnadi = On Time
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCJQwlKiwx7Qtcp8d46QQd9gkHfsVX5j20",
-      authDomain: "atte-73d96.firebaseapp.com",
-      databaseURL: "https://atte-73d96-default-rtdb.firebaseio.com",
-      projectId: "atte-73d96",
-      storageBucket: "atte-73d96.firebasestorage.app",
-      messagingSenderId: "286212566095",
-      appId: "1:286212566095:web:ba1177cca497de36968e3a",
-      measurementId: "G-BCX84PH05W"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // Date set pannu
-    const today = new Date().toISOString().split('T')[0];
-    const dateStr = new Date().toLocaleDateString('en-IN', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-    });
-    document.getElementById('studentDate').innerText = dateStr;
-    document.getElementById('adminDate').innerText = dateStr;
-
-    // Tab switch
-    window.showTab = function(tab) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.box').forEach(b => b.classList.add('hidden'));
-
-      if (tab === 'student') {
-        document.querySelectorAll('.tab')[0].classList.add('active');
-        document.getElementById('studentPage').classList.remove('hidden');
-      } else {
-        document.querySelectorAll('.tab')[1].classList.add('active');
-        document.getElementById('adminPage').classList.remove('hidden');
-        loadAttendance();
-      }
-    }
-
-    // Attendance Mark Pannu
-    window.markAttendance = async function() {
-      const name = document.getElementById('name').value.trim();
-      const roll = document.getElementById('roll').value.trim();
-      const msg = document.getElementById('msg');
-      const btn = document.getElementById('markBtn');
-
-      if (!name ||!roll) {
-        msg.className = 'error';
-        msg.innerText = '❌ Name & Roll Number podu da';
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerText = 'Checking...';
-
-      try {
-        // Already marked ah nu check pannu
-        const checkRef = ref(db, `attendance/${today}/${roll}`);
-        const snapshot = await get(checkRef);
-
-        if (snapshot.exists()) {
-          msg.className = 'warning';
-          msg.innerText = '⚠️ Already marked da! ' + snapshot.val().time;
-          btn.disabled = false;
-          btn.innerText = 'Present Podu ✅';
-          return;
+        // Show/Hide Functions
+        function showStudentLogin() {
+            homeSection.style.display = 'none';
+            studentSection.style.display = 'block';
+            adminSection.style.display = 'none';
         }
 
-        // Time check pannu - Late ah illa On time ah
-        const now = new Date();
-        const cutOff = new Date();
-        cutOff.setHours(CUT_OFF_HOUR, CUT_OFF_MINUTE, 0, 0);
-        const status = now <= cutOff? 'On Time' : 'Late';
-
-        // Save pannu
-        await set(checkRef, {
-          name: name,
-          rollNo: roll,
-          timestamp: now.toISOString(),
-          time: now.toLocaleTimeString('en-IN'),
-          status: status
-        });
-
-        msg.className = 'success';
-        msg.innerText = `✅ ${name} - ${status} ah marked da!`;
-        document.getElementById('name').value = '';
-        document.getElementById('roll').value = '';
-
-      } catch (e) {
-        msg.className = 'error';
-        msg.innerText = '❌ Error: ' + e.message;
-      }
-
-      btn.disabled = false;
-      btn.innerText = 'Present Podu ✅';
-    }
-
-    // Admin - Load Attendance
-    window.loadAttendance = async function() {
-      const tableBody = document.getElementById('tableBody');
-      tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
-
-      try {
-        const dbRef = ref(db);
-        const snapshot = await get(child(dbRef, `attendance/${today}`));
-
-        if (!snapshot.exists()) {
-          tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Innum yaarum mark pannala da</td></tr>';
-          updateStats(0, 0, 0);
-          return;
+        function showAdminLogin() {
+            homeSection.style.display = 'none';
+            adminSection.style.display = 'block';
+            studentSection.style.display = 'none';
         }
 
-        const data = snapshot.val();
-        let rows = '';
-        let total = 0, onTime = 0, late = 0;
-
-        Object.values(data).forEach(rec => {
-          total++;
-          if (rec.status === 'On Time') onTime++;
-          else late++;
-
-          rows += `
-            <tr>
-              <td>${rec.rollNo}</td>
-              <td>${rec.name}</td>
-              <td>${rec.time}</td>
-              <td>${rec.status === 'On Time'? '✅' : '⚠️'} ${rec.status}</td>
-            </tr>
-          `;
-        });
-
-        tableBody.innerHTML = rows;
-        updateStats(total, onTime, late);
-
-      } catch (e) {
-        tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Error: ${e.message}</td></tr>`;
-      }
-    }
-
-    function updateStats(total, onTime, late) {
-      document.getElementById('totalCount').innerText = total;
-      document.getElementById('onTimeCount').innerText = onTime;
-      document.getElementById('lateCount').innerText = late;
-    }
-
-    // CSV Download
-    window.downloadCSV = async function() {
-      try {
-        const dbRef = ref(db);
-        const snapshot = await get(child(dbRef, `attendance/${today}`));
-
-        if (!snapshot.exists()) {
-          alert('Data illa da');
-          return;
+        function goBack() {
+            homeSection.style.display = 'block';
+            studentSection.style.display = 'none';
+            adminSection.style.display = 'none';
         }
 
-        const data = Object.values(snapshot.val());
-        let csv = 'Roll No,Name,Time,Status\n';
-        data.forEach(r => {
-          csv += `${r.rollNo},${r.name},${r.time},${r.status}\n`;
-        });
+        // Button Events
+        document.getElementById('studentBtn').onclick = showStudentLogin;
+        document.getElementById('adminBtn').onclick = showAdminLogin;
+        document.getElementById('backFromStudent').onclick = goBack;
+        document.getElementById('backFromAdmin').onclick = goBack;
 
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `attendance_${today}.csv`;
-        a.click();
+        // Mark Attendance
+        document.getElementById('markAttendance').onclick = () => {
+            const name = document.getElementById('studentName').value.trim();
+            const roll = document.getElementById('studentRoll').value.trim();
+            const status = document.getElementById('studentStatus');
 
-      } catch (e) {
-        alert('Error: ' + e.message);
-      }
-    }
-  </script>
+            if (!name || !roll) {
+                status.textContent = 'Name and Roll Number required da!';
+                status.className = 'status error';
+                return;
+            }
+
+            const attendanceRef = ref(database, 'attendance');
+            push(attendanceRef, {
+                name: name,
+                roll: roll,
+                timestamp: new Date().toLocaleString(),
+                date: new Date().toLocaleDateString()
+            }).then(() => {
+                status.textContent = 'Attendance marked successfully! ✅';
+                status.className = 'status success';
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentRoll').value = '';
+            }).catch((error) => {
+                status.textContent = 'Error: ' + error.message;
+                status.className = 'status error';
+            });
+        };
+
+        // Admin View Attendance
+        document.getElementById('viewAttendance').onclick = () => {
+            const pass = document.getElementById('adminPass').value;
+            const status = document.getElementById('adminStatus');
+            const list = document.getElementById('attendanceList');
+
+            if (pass !== 'admin123') {
+                status.textContent = 'Wrong password da!';
+                status.className = 'status error';
+                return;
+            }
+
+            status.textContent = 'Loading...';
+            status.className = 'status';
+
+            const attendanceRef = ref(database, 'attendance');
+            onValue(attendanceRef, (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    list.innerHTML = '<p>No attendance yet da</p>';
+                    return;
+                }
+
+                let html = '<h3>Today Attendance:</h3><table style="width:100%; margin-top:10px; border-collapse: collapse;">';
+                html += '<tr style="background:#f0f0f0;"><th style="padding:8px; border:1px solid #ddd;">Name</th><th style="padding:8px; border:1px solid #ddd;">Roll</th><th style="padding:8px; border:1px solid #ddd;">Time</th></tr>';
+                
+                Object.values(data).forEach(item => {
+                    html += `<tr>
+                        <td style="padding:8px; border:1px solid #ddd;">${item.name}</td>
+                        <td style="padding:8px; border:1px solid #ddd;">${item.roll}</td>
+                        <td style="padding:8px; border:1px solid #ddd;">${item.timestamp}</td>
+                    </tr>`;
+                });
+                html += '</table>';
+                list.innerHTML = html;
+                status.textContent = 'Data loaded ✅';
+                status.className = 'status success';
+            });
+        };
+    </script>
 </body>
 </html>
