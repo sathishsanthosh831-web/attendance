@@ -1,84 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Live Attendance System</title>
-    <style>
-        body { font-family: 'Poppins', sans-serif; background: #eef2f3; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 450px; }
-        .btn-main { background: #764ba2; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: center; }
-    </style>
+  <title>Attendance System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+    .box { background: white; padding: 30px; border-radius: 10px; max-width: 400px; margin: auto; }
+    button { padding: 12px 25px; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+  </style>
 </head>
 <body>
+  <div class="box">
+    <h2>Attendance Mark Pannu</h2>
+    <input type="text" id="name" placeholder="Un Name">
+    <input type="text" id="roll" placeholder="Roll Number">
+    <button onclick="markAttendance()">Present Podu</button>
+    <p id="msg"></p>
+  </div>
 
-<div class="card">
-    <div id="authSection">
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="pass" placeholder="Password">
-        <button class="btn-main" onclick="checkLogin()">Login</button>
-    </div>
+  <!-- Firebase v9 SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-    <div id="attendanceSection" style="display:none;">
-        <div id="adminControls" style="display:none;">
-            <input type="text" id="newName" placeholder="Student Name">
-            <input type="text" id="newRoll" placeholder="Roll No">
-            <button class="btn-main" onclick="addStudent()">+ Add Student</button>
-        </div>
-        <table id="studentTable">
-            <tr><th>Name</th><th>Roll</th><th>Action</th></tr>
-        </table>
-    </div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
-
+    // Un config da
     const firebaseConfig = {
-        apiKey: "AIzaSyAmBObp5M9XsgkMR-bHHvd8WygJsR-9_xo",
-        authDomain: "attendance-8257e.firebaseapp.com",
-        projectId: "attendance-8257e",
-        storageBucket: "attendance-8257e.firebasestorage.app",
-        messagingSenderId: "897935484063",
-        appId: "1:897935484063:web:a3c5a0a5ffbc4d3d0eeeaa"
+      apiKey: "AIzaSyAmBObp5M9XsgkMR-bHHvd8WygJsR-9_xo",
+      authDomain: "attendance-8257e.firebaseapp.com",
+      projectId: "attendance-8257e",
+      storageBucket: "attendance-8257e.firebasestorage.app",
+      messagingSenderId: "897935484063",
+      appId: "1:897935484063:web:a3c5a0a5ffbc4d3d0eeeaa",
+      measurementId: "G-H68F4QKF1S"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Login logic
-    window.checkLogin = () => {
-        if(document.getElementById('username').value === "admin" && document.getElementById('pass').value === "12345") {
-            document.getElementById('adminControls').style.display = 'block';
-            document.getElementById('authSection').style.display = 'none';
-        }
-        document.getElementById('attendanceSection').style.display = 'block';
-        document.getElementById('authSection').style.display = 'none';
-    };
+    // Attendance mark panna function
+    window.markAttendance = async function() {
+      const name = document.getElementById('name').value;
+      const roll = document.getElementById('roll').value;
+      const msg = document.getElementById('msg');
+      
+      if (!name || !roll) {
+        msg.innerText = 'Name & Roll Number podu da';
+        return;
+      }
 
-    // Real-time listener (Live Update)
-    const q = collection(db, "students");
-    onSnapshot(q, (snapshot) => {
-        let table = document.getElementById('studentTable');
-        table.innerHTML = `<tr><th>Name</th><th>Roll</th><th>Action</th></tr>`;
-        snapshot.forEach((doc) => {
-            let data = doc.data();
-            table.innerHTML += `<tr><td>${data.name}</td><td>${data.roll}</td>
-            <td><button onclick="deleteStudent('${doc.id}')">Del</button></td></tr>`;
+      try {
+        await addDoc(collection(db, 'attendance'), {
+          name: name,
+          rollNo: roll,
+          time: new Date(),
+          date: new Date().toLocaleDateString('en-IN')
         });
-    });
-
-    window.addStudent = async () => {
-        let name = document.getElementById('newName').value;
-        let roll = document.getElementById('newRoll').value;
-        await addDoc(collection(db, "students"), { name, roll });
-    };
-
-    window.deleteStudent = async (id) => {
-        await deleteDoc(doc(db, "students", id));
-    };
-</script>
+        msg.innerText = '✅ Attendance marked da!';
+        document.getElementById('name').value = '';
+        document.getElementById('roll').value = '';
+      } catch (e) {
+        msg.innerText = '❌ Error: ' + e.message;
+      }
+    }
+  </script>
 </body>
 </html>
