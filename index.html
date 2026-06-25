@@ -10,90 +10,207 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 20px;
         }
-        .container {
+   .container {
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
+            max-width: 800px;
+            margin: 0 auto;
         }
-        h1 { color: #333; margin-bottom: 30px; }
+        h1 { color: #333; margin-bottom: 20px; text-align: center; }
+        h2 { color: #555; margin: 20px 0 15px; }
+        h3 { color: #666; margin: 15px 0 10px; }
         button {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
+            padding: 12px 20px;
+            margin: 8px 4px;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
-        .student-btn { background: #4CAF50; color: white; }
-        .student-btn:hover { background: #45a049; transform: scale(1.05); }
-        .admin-btn { background: #2196F3; color: white; }
-        .admin-btn:hover { background: #0b7dda; transform: scale(1.05); }
-        .form-section { display: none; margin-top: 20px; }
-        input {
+   .student-btn { background: #4CAF50; color: white; width: 100%; }
+   .student-btn:active { background: #45a049; }
+   .admin-btn { background: #2196F3; color: white; width: 100%; }
+   .admin-btn:active { background: #0b7dda; }
+   .check-btn { background: #9C27B0; color: white; width: 100%; }
+   .check-btn:active { background: #7B1FA2; }
+   .add-btn { background: #ff9800; color: white; }
+   .add-btn:active { background: #e68900; }
+   .present-btn { background: #4CAF50; color: white; padding: 8px 15px; }
+   .present-btn:active { background: #45a049; }
+   .absent-btn { background: #f44336; color: white; padding: 8px 15px; }
+   .absent-btn:active { background: #da190b; }
+   .back-btn { background: #9e9e9e; color: white; }
+   .back-btn:active { background: #757575; }
+   .submit-btn { background: #ff5722; color: white; }
+   .submit-btn:active { background: #e64a19; }
+   .form-section { display: none; margin-top: 20px; }
+        input, select {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 14px;
+            font-size: 16px;
         }
-        .submit-btn { background: #ff5722; color: white; }
-        .back-btn { background: #9e9e9e; color: white; }
-        .status { margin-top: 15px; font-weight: bold; }
-        .success { color: green; }
-        .error { color: red; }
+   .password-box {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #ff9800;
+        }
+   .student-form {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+   .date-selector {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+   .student-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+   .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+   .student-info { flex: 1; }
+   .student-name { font-weight: bold; color: #333; }
+   .student-roll { color: #666; font-size: 13px; }
+   .status { margin-top: 15px; font-weight: bold; text-align: center; }
+   .success { color: green; }
+   .error { color: red; }
+   .attendance-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+   .present-badge { background: #c8e6c9; color: #2e7d32; }
+   .absent-badge { background: #ffcdd2; color: #c62828; }
+   .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: center;
+        }
+   .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+   .stat-box {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+        }
+   .stat-number { font-size: 28px; font-weight: bold; }
+   .stat-label { font-size: 12px; margin-top: 5px; }
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th { background: #f0f0f0; }
     </style>
+    
+    <!-- Firebase Compat SDK - Mobile la work aagum -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Attendance System</h1>
-        
+
         <div id="homeSection">
-            <button class="student-btn" id="studentBtn">Student Login</button>
-            <button class="admin-btn" id="adminBtn">Admin Login</button>
+            <button class="student-btn" onclick="showStudentLogin()">staff login</button>
+            <button class="check-btn" onclick="showCheckAttendance()">Check My Attendance</button>
+            <button class="admin-btn" onclick="showAdminLogin()">Admin Login</button>
+        </div>
+
+        <div id="studentLoginSection" class="form-section">
+            <h2>Student Login</h2>
+            <div class="password-box">
+                <input type="password" id="studentPass" placeholder="Enter Student Password">
+                <button class="submit-btn" onclick="studentLoginCheck()">Login</button>
+                <button class="back-btn" onclick="goBack()">Back</button>
+            </div>
+            <div id="studentLoginStatus" class="status"></div>
         </div>
 
         <div id="studentSection" class="form-section">
-            <h2>Student Attendance</h2>
-            <input type="text" id="studentName" placeholder="Your Name">
-            <input type="text" id="studentRoll" placeholder="Roll Number">
-            <button class="submit-btn" id="markAttendance">Mark Attendance</button>
-            <button class="back-btn" id="backFromStudent">Back</button>
+            <h2>Student Panel</h2>
+            <div class="date-selector">
+                <label><b>Select Date:</b></label>
+                <input type="date" id="attendanceDate" onchange="loadStudentList()">
+            </div>
+            <button class="add-btn" onclick="toggleAddStudent()">➕ Add Student List</button>
+            <button class="back-btn" onclick="goBack()">Back</button>
+            <div id="addStudentForm" class="student-form">
+                <h3>Add New Student</h3>
+                <input type="text" id="newStudentName" placeholder="Student Name">
+                <input type="text" id="newStudentRoll" placeholder="Roll Number">
+                <button class="submit-btn" onclick="addStudent()">Add Student</button>
+            </div>
+            <div id="studentList" class="student-list"></div>
             <div id="studentStatus" class="status"></div>
+        </div>
+
+        <div id="checkAttendanceSection" class="form-section">
+            <h2>Check Your Attendance</h2>
+            <input type="text" id="checkRollNumber" placeholder="Enter Your Roll Number">
+            <button class="submit-btn" onclick="checkMyAttendance()">Check Status</button>
+            <button class="back-btn" onclick="goBack()">Back</button>
+            <div id="myAttendanceResult"></div>
+            <div id="checkStatus" class="status"></div>
         </div>
 
         <div id="adminSection" class="form-section">
             <h2>Admin Panel</h2>
             <input type="password" id="adminPass" placeholder="Admin Password">
-            <button class="submit-btn" id="viewAttendance">View All Attendance</button>
-            <button class="back-btn" id="backFromAdmin">Back</button>
+            <button class="submit-btn" onclick="viewAttendance()">View All Attendance</button>
+            <button class="back-btn" onclick="goBack()">Back</button>
             <div id="adminStatus" class="status"></div>
             <div id="attendanceList"></div>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        // Import Firebase
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-        // UN CONFIG - Idha maatha vendam, un project dhan
+    <script>
+        // Firebase Config - UNGATHA PASTE PANNU DA
         const firebaseConfig = {
-            apiKey: ""AIzaSyCJQwlKiwx7Qtcp8d46QQd9gkHfsVX5j20", // Config la irundhu copy pannu
+            apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxx",
             authDomain: "atte-73d96.firebaseapp.com",
-            databaseURL: "https://atte-73d96-default-rtdb.firebaseio.com", // ✅ Un URL
+            databaseURL: "https://atte-73d96-default-rtdb.firebaseio.com",
             projectId: "atte-73d96",
             storageBucket: "atte-73d96.appspot.com",
             messagingSenderId: "286212566095",
@@ -101,76 +218,147 @@
         };
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        // UI Elements
-        const homeSection = document.getElementById('homeSection');
-        const studentSection = document.getElementById('studentSection');
-        const adminSection = document.getElementById('adminSection');
+        const STUDENT_PASSWORD = 'sun';
+        const ADMIN_PASSWORD = 'admin';
 
-        // Show/Hide Functions
+        document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
+
         function showStudentLogin() {
-            homeSection.style.display = 'none';
-            studentSection.style.display = 'block';
-            adminSection.style.display = 'none';
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('studentLoginSection').style.display = 'block';
+        }
+
+        function showCheckAttendance() {
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('checkAttendanceSection').style.display = 'block';
         }
 
         function showAdminLogin() {
-            homeSection.style.display = 'none';
-            adminSection.style.display = 'block';
-            studentSection.style.display = 'none';
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('adminSection').style.display = 'block';
         }
 
         function goBack() {
-            homeSection.style.display = 'block';
-            studentSection.style.display = 'none';
-            adminSection.style.display = 'none';
+            document.getElementById('homeSection').style.display = 'block';
+            document.getElementById('studentSection').style.display = 'none';
+            document.getElementById('adminSection').style.display = 'none';
+            document.getElementById('checkAttendanceSection').style.display = 'none';
+            document.getElementById('studentLoginSection').style.display = 'none';
+            document.getElementById('addStudentForm').style.display = 'none';
         }
 
-        // Button Events
-        document.getElementById('studentBtn').onclick = showStudentLogin;
-        document.getElementById('adminBtn').onclick = showAdminLogin;
-        document.getElementById('backFromStudent').onclick = goBack;
-        document.getElementById('backFromAdmin').onclick = goBack;
+        function studentLoginCheck() {
+            const pass = document.getElementById('studentPass').value;
+            const status = document.getElementById('studentLoginStatus');
 
-        // Mark Attendance
-        document.getElementById('markAttendance').onclick = () => {
-            const name = document.getElementById('studentName').value.trim();
-            const roll = document.getElementById('studentRoll').value.trim();
+            if (pass === STUDENT_PASSWORD) {
+                status.textContent = 'Login Success!';
+                status.className = 'status success';
+                setTimeout(() => {
+                    document.getElementById('studentLoginSection').style.display = 'none';
+                    document.getElementById('studentSection').style.display = 'block';
+                    document.getElementById('studentPass').value = '';
+                    status.textContent = '';
+                    loadStudentList();
+                }, 500);
+            } else {
+                status.textContent = 'Wrong password da!';
+                status.className = 'status error';
+            }
+        }
+
+        function toggleAddStudent() {
+            const form = document.getElementById('addStudentForm');
+            form.style.display = form.style.display === 'none'? 'block' : 'none';
+        }
+
+        function addStudent() {
+            const name = document.getElementById('newStudentName').value.trim();
+            const roll = document.getElementById('newStudentRoll').value.trim();
             const status = document.getElementById('studentStatus');
 
-            if (!name || !roll) {
+            if (!name ||!roll) {
                 status.textContent = 'Name and Roll Number required da!';
                 status.className = 'status error';
                 return;
             }
 
-            const attendanceRef = ref(database, 'attendance');
-            push(attendanceRef, {
+            database.ref('students').push({
                 name: name,
                 roll: roll,
-                timestamp: new Date().toLocaleString(),
-                date: new Date().toLocaleDateString()
+                createdAt: new Date().toLocaleString()
             }).then(() => {
-                status.textContent = 'Attendance marked successfully! ✅';
+                status.textContent = `${name} added successfully!`;
                 status.className = 'status success';
-                document.getElementById('studentName').value = '';
-                document.getElementById('studentRoll').value = '';
-            }).catch((error) => {
-                status.textContent = 'Error: ' + error.message;
-                status.className = 'status error';
+                document.getElementById('newStudentName').value = '';
+                document.getElementById('newStudentRoll').value = '';
+                document.getElementById('addStudentForm').style.display = 'none';
             });
-        };
+        }
 
-        // Admin View Attendance
-        document.getElementById('viewAttendance').onclick = () => {
-            const pass = document.getElementById('adminPass').value;
-            const status = document.getElementById('adminStatus');
-            const list = document.getElementById('attendanceList');
+        function loadStudentList() {
+            const selectedDate = document.getElementById('attendanceDate').value;
+            if (!selectedDate) return;
 
-            if (pass !== 'admin123') {
-                status.textContent = 'Wrong password da!';
+            const list = document.getElementById('studentList');
+
+            database.ref('students').on('value', (studentSnapshot) => {
+                const students = studentSnapshot.val();
+                if (!students) {
+                    list.innerHTML = '<p style="text-align:center; color:#666;">No students added yet. Click "Add Student List" to add.</p>';
+                    return;
+                }
+
+                database.ref(`attendance/${selectedDate}`).on('value', (attendanceSnapshot) => {
+                    const attendance = attendanceSnapshot.val() || {};
+                    let html = `<h3>Student List - ${selectedDate}</h3>`;
+
+                    Object.entries(students).forEach(([id, student]) => {
+                        const studentAttendance = attendance[id];
+                        let badge = '';
+                        if (studentAttendance === 'P') {
+                            badge = '<span class="attendance-badge present-badge">Present</span>';
+                        } else if (studentAttendance === 'A') {
+                            badge = '<span class="attendance-badge absent-badge">Absent</span>';
+                        }
+
+                        html += `
+                            <div class="student-item">
+                                <div class="student-info">
+                                    <div class="student-name">${student.name} ${badge}</div>
+                                    <div class="student-roll">Roll: ${student.roll}</div>
+                                </div>
+                                <div>
+                                    <button class="present-btn" onclick="markAttendance('${id}', 'P', '${selectedDate}')">P</button>
+                                    <button class="absent-btn" onclick="markAttendance('${id}', 'A', '${selectedDate}')">A</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    list.innerHTML = html;
+                });
+            });
+        }
+
+        function markAttendance(studentId, status, date) {
+            database.ref(`attendance/${date}/${studentId}`).set(status).then(() => {
+                const statusEl = document.getElementById('studentStatus');
+                statusEl.textContent = `Marked as ${status === 'P'? 'Present' : 'Absent'}`;
+                statusEl.className = 'status success';
+                setTimeout(() => statusEl.textContent = '', 2000);
+            });
+        }
+
+        async function checkMyAttendance() {
+            const rollNumber = document.getElementById('checkRollNumber').value.trim();
+            const resultDiv = document.getElementById('myAttendanceResult');
+            const status = document.getElementById('checkStatus');
+
+            if (!rollNumber) {
+                status.textContent = 'Roll Number enter pannu da!';
                 status.className = 'status error';
                 return;
             }
@@ -178,30 +366,127 @@
             status.textContent = 'Loading...';
             status.className = 'status';
 
-            const attendanceRef = ref(database, 'attendance');
-            onValue(attendanceRef, (snapshot) => {
-                const data = snapshot.val();
-                if (!data) {
-                    list.innerHTML = '<p>No attendance yet da</p>';
-                    return;
-                }
+            const studentsSnapshot = await database.ref('students').once('value');
+            const students = studentsSnapshot.val();
 
-                let html = '<h3>Today Attendance:</h3><table style="width:100%; margin-top:10px; border-collapse: collapse;">';
-                html += '<tr style="background:#f0f0f0;"><th style="padding:8px; border:1px solid #ddd;">Name</th><th style="padding:8px; border:1px solid #ddd;">Roll</th><th style="padding:8px; border:1px solid #ddd;">Time</th></tr>';
-                
-                Object.values(data).forEach(item => {
-                    html += `<tr>
-                        <td style="padding:8px; border:1px solid #ddd;">${item.name}</td>
-                        <td style="padding:8px; border:1px solid #ddd;">${item.roll}</td>
-                        <td style="padding:8px; border:1px solid #ddd;">${item.timestamp}</td>
-                    </tr>`;
-                });
-                html += '</table>';
-                list.innerHTML = html;
-                status.textContent = 'Data loaded ✅';
-                status.className = 'status success';
+            if (!students) {
+                status.textContent = 'No students found!';
+                status.className = 'status error';
+                return;
+            }
+
+            let studentId = null;
+            let studentName = '';
+            Object.entries(students).forEach(([id, student]) => {
+                if (student.roll === rollNumber) {
+                    studentId = id;
+                    studentName = student.name;
+                }
             });
-        };
+
+            if (!studentId) {
+                status.textContent = 'Roll Number not found da!';
+                status.className = 'status error';
+                resultDiv.innerHTML = '';
+                return;
+            }
+
+            const attendanceSnapshot = await database.ref('attendance').once('value');
+            const allAttendance = attendanceSnapshot.val() || {};
+
+            let presentCount = 0;
+            let absentCount = 0;
+            let totalDays = 0;
+            let historyHTML = '<table><tr><th>Date</th><th>Status</th></tr>';
+
+            Object.entries(allAttendance).forEach(([date, dayAttendance]) => {
+                if (dayAttendance[studentId]) {
+                    totalDays++;
+                    if (dayAttendance[studentId] === 'P') {
+                        presentCount++;
+                        historyHTML += `<tr><td>${date}</td><td>Present</td></tr>`;
+                    } else if (dayAttendance[studentId] === 'A') {
+                        absentCount++;
+                        historyHTML += `<tr><td>${date}</td><td>Absent</td></tr>`;
+                    }
+                }
+            });
+            historyHTML += '</table>';
+
+            const percentage = totalDays > 0? ((presentCount / totalDays) * 100).toFixed(1) : 0;
+
+            resultDiv.innerHTML = `
+                <div class="stats-card">
+                    <h3>${studentName} - ${rollNumber}</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-number">${presentCount}</div>
+                            <div class="stat-label">Present</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">${absentCount}</div>
+                            <div class="stat-label">Absent</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">${percentage}%</div>
+                            <div class="stat-label">Attendance</div>
+                        </div>
+                    </div>
+                </div>
+                <h3>Attendance History</h3>
+                ${historyHTML}
+            `;
+            status.textContent = '';
+        }
+
+        function viewAttendance() {
+            const pass = document.getElementById('adminPass').value;
+            const status = document.getElementById('adminStatus');
+            const list = document.getElementById('attendanceList');
+
+            if (pass!== ADMIN_PASSWORD) {
+                status.textContent = 'Wrong password da!';
+                status.className = 'status error';
+                return;
+            }
+
+            status.textContent = 'Loading...';
+
+            database.ref('students').on('value', (studentSnapshot) => {
+                const students = studentSnapshot.val();
+                database.ref('attendance').on('value', (attendanceSnapshot) => {
+                    const allAttendance = attendanceSnapshot.val() || {};
+                    const dates = Object.keys(allAttendance).sort().reverse();
+
+                    let html = '<h3>All Students Attendance Summary</h3>';
+                    html += '<table><tr><th>Name</th><th>Roll</th><th>Present</th><th>Absent</th><th>%</th></tr>';
+
+                    if (students) {
+                        Object.entries(students).forEach(([id, student]) => {
+                            let presentCount = 0, absentCount = 0;
+                            dates.forEach(date => {
+                                if (allAttendance[date][id] === 'P') presentCount++;
+                                if (allAttendance[date][id] === 'A') absentCount++;
+                            });
+                            const total = presentCount + absentCount;
+                            const percentage = total > 0? ((presentCount / total) * 100).toFixed(1) : 0;
+
+                            html += `<tr>
+                                <td>${student.name}</td>
+                                <td>${student.roll}</td>
+                                <td>${presentCount}</td>
+                                <td>${absentCount}</td>
+                                <td>${percentage}%</td>
+                            </tr>`;
+                        });
+                    }
+                    html += '</table>';
+                    list.innerHTML = html;
+                    status.textContent = 'Data loaded';
+                    status.className = 'status success';
+                });
+            });
+        }
     </script>
 </body>
 </html>
