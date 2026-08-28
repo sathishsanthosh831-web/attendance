@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #1565c0;
+            --blue-dark: #0d47a1;
+            --blue-light: #e3f2fd;
+            --blue-line: #bbdefb;
+            --white: #ffffff;
+            --text: #1a2332;
+            --muted: #64748b;
+            --emerald: #1f7a4d;
+            --emerald-bg: #e1f3e8;
+            --crimson: #c62828;
+            --crimson-bg: #fce4e4;
+            --shadow: 0 20px 45px -20px rgba(21, 101, 192, 0.35);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(160deg, #1565c0 0%, #0d47a1 100%);
+            min-height: 100vh;
+            padding: 32px 20px;
+            color: var(--text);
+        }
+   .container {
+            background: var(--white);
+            padding: 34px 30px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            max-width: 760px;
+            margin: 0 auto;
+            border-top: 5px solid var(--blue);
+        }
+        .eyebrow {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--blue);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 30px;
+            color: var(--blue-dark);
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        .rule {
+            width: 64px;
+            height: 3px;
+            background: var(--blue);
+            margin: 0 auto 26px;
+            border-radius: 2px;
+        }
+        h2 {
+            font-weight: 700;
+            color: var(--blue-dark);
+            margin: 22px 0 15px;
+            font-size: 20px;
+        }
+        h3 {
+            font-weight: 700;
+            color: var(--blue-dark);
+            margin: 15px 0 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 13px 20px;
+            margin: 7px 4px 7px 0;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        button:active { transform: scale(0.98); }
+   .student-btn {
+            background: var(--blue);
+            color: var(--white);
+            width: 100%;
+            border-color: var(--blue);
+        }
+   .student-btn:active { background: var(--blue-dark); }
+   .admin-btn {
+            background: var(--white);
+            color: var(--blue);
+            width: 100%;
+            border-color: var(--blue);
+        }
+   .admin-btn:active { background: var(--blue-light); }
+   .check-btn {
+            background: var(--blue-dark);
+            color: var(--white);
+            width: 100%;
+            border-color: var(--blue-dark);
+        }
+   .check-btn:active { background: #093a85; }
+   .add-btn {
+            background: var(--white);
+            color: var(--blue);
+            border-color: var(--blue);
+        }
+   .add-btn:active { background: var(--blue-light); }
+   .present-btn {
+            background: var(--emerald-bg);
+            color: var(--emerald);
+            padding: 8px 16px;
+            border-color: var(--emerald-bg);
+        }
+   .present-btn:active { background: #cdeada; }
+   .absent-btn {
+            background: var(--crimson-bg);
+            color: var(--crimson);
+            padding: 8px 16px;
+            border-color: var(--crimson-bg);
+        }
+   .absent-btn:active { background: #f6cfcf; }
+   .delete-btn {
+            background: var(--white);
+            color: var(--crimson);
+            padding: 8px 12px;
+            border-color: var(--crimson-bg);
+        }
+   .delete-btn:active { background: var(--crimson-bg); }
+   .back-btn {
+            background: var(--white);
+            color: var(--muted);
+            border-color: #dbe3ea;
+        }
+   .back-btn:active { background: #f1f5f9; }
+   .submit-btn {
+            background: var(--blue);
+            color: var(--white);
+            border-color: var(--blue);
+        }
+   .submit-btn:active { background: var(--blue-dark); }
+   .form-section { display: none; margin-top: 20px; }
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            margin: 8px 0;
+            border: 1px solid var(--blue-line);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            background: #fff;
+            color: var(--text);
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.15);
+        }
+        input[type="file"] {
+            padding: 8px;
+            background: var(--blue-light);
+        }
+   .password-box {
+            background: var(--blue-light);
+            padding: 22px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid var(--blue-line);
+        }
+   .student-form {
+            background: var(--blue-light);
+            padding: 16px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid var(--blue-line);
+            display: none;
+        }
+   .date-selector {
+            background: var(--blue-light);
+            color: var(--blue-dark);
+            padding: 16px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid var(--blue-line);
+        }
+        .date-selector label { color: var(--blue-dark); font-size: 12px; letter-spacing: 0.05em; }
+        .date-selector input { border-color: var(--blue-line); }
+   .student-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+   .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            margin: 8px 0;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid var(--blue-line);
+            gap: 10px;
+        }
+   .student-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--blue-light);
+            border: 1px solid var(--blue-line);
+            flex-shrink: 0;
+        }
+        .student-avatar-fallback {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--blue);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+   .student-info { flex: 1; min-width: 0; }
+   .student-name { font-weight: 700; color: var(--text); }
+   .student-roll { color: var(--muted); font-size: 12px; margin-top: 2px; }
+   .student-meta { color: var(--muted); font-size: 12px; margin-top: 1px; }
+        .student-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+   .status { margin-top: 15px; font-weight: 700; text-align: center; font-size: 14px; }
+   .success { color: var(--emerald); }
+   .error { color: var(--crimson); }
+   .attendance-badge {
+            padding: 3px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+   .present-badge { background: var(--emerald-bg); color: var(--emerald); }
+   .absent-badge { background: var(--crimson-bg); color: var(--crimson); }
+   .stats-card {
+            background: var(--blue-dark);
+            color: var(--white);
+            padding: 26px 22px;
+            border-radius: 14px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .stats-card h3 {
+            color: var(--white);
+            font-size: 18px;
+        }
+        .ring-wrap { display: flex; justify-content: center; margin: 18px 0 6px; }
+        .ring {
+            position: relative;
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ring::before {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            background: var(--blue-dark);
+        }
+        .ring-value {
+            position: relative;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .ring-value span {
+            display: block;
+            font-size: 10px;
+            color: var(--blue-light);
+            letter-spacing: 0.1em;
+            margin-top: 2px;
+        }
+   .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 6px;
+        }
+   .stat-box {
+            background: rgba(255,255,255,0.12);
+            padding: 14px;
+            border-radius: 8px;
+        }
+   .stat-number { font-size: 22px; font-weight: 700; }
+   .stat-label { font-size: 10px; margin-top: 4px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue-light); }
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 11px 10px;
+            border-bottom: 1px solid var(--blue-line);
+            text-align: left;
+        }
+        th {
+            background: var(--blue-light);
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--blue-dark);
+            font-weight: 700;
+        }
+        tr:last-child td { border-bottom: none; }
+    </style>
+    
+    <!-- Firebase Compat SDK - Mobile la work aagum -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="eyebrow">Staff · Student · Admin</div>
+        <h1>Attendance Register</h1>
+        <div class="rule"></div>
+
+        <div id="homeSection">
+            <button class="student-btn" onclick="showStudentLogin()">staff login</button>
+            <button class="check-btn" onclick="showCheckAttendance()">Check My Attendance</button>
+            <button class="admin-btn" onclick="showAdminLogin()">Admin Login</button>
+        </div>
+
+        <div id="studentLoginSection" class="form-section">
+            <h2>Student Login</h2>
+            <div class="password-box">
+                <input type="password" id="studentPass" placeholder="Enter Student Password">
+                <button class="submit-btn" onclick="studentLoginCheck()">Login</button>
+                <button class="back-btn" onclick="goBack()">Back</button>
+            </div>
+            <div id="studentLoginStatus" class="status"></div>
+        </div>
+
+        <div id="studentSection" class="form-section">
+            <h2>Student Panel</h2>
+            <div class="date-selector">
+                <label><b>Select Date:</b></label>
+                <input type="date" id="attendanceDate" onchange="loadStudentList()">
+            </div>
+            <button class="add-btn" onclick="toggleAddStudent()">➕ Add Student List</button>
+            <button class="back-btn" onclick="goBack()">Back</button>
+            <div id="addStudentForm" class="student-form">
+                <h3>Add New Student</h3>
+                <input type="text" id="newStudentName" placeholder="Student Name">
+                <input type="text" id="newStudentRoll" placeholder="Roll Number">
+                <input type="tel" id="newStudentPhone" placeholder="Phone Number">
+                <input type="text" id="newStudentClass" placeholder="Class / Section">
+                <label style="display:block; font-size:12px; color:#64748b; margin-top:6px;">Student Photo</label>
+                <input type="file" id="newStudentPhoto" accept="image/*">
+                <button class="submit-btn" onclick="addStudent()">Add Student</button>
+            </div>
+            <div id="studentList" class="student-list"></div>
+            <div id="studentStatus" class="status"></div>
+        </div>
+
+        <div id="checkAttendanceSection" class="form-section">
+            <h2>Check Your Attendance</h2>
+            <input type="text" id="checkRollNumber" placeholder="Enter Your Roll Number">
+            <button class="submit-btn" onclick="checkMyAttendance()">Check Status</button>
+            <button class="back-btn" onclick="goBack()">Back</button>
+            <div id="myAttendanceResult"></div>
+            <div id="checkStatus" class="status"></div>
+        </div>
+
+        <div id="adminSection" class="form-section">
+            <h2>Admin Panel</h2>
+            <input type="password" id="adminPass" placeholder="Admin Password">
+            <button class="submit-btn" onclick="viewAttendance()">View All Attendance</button>
+            <button class="back-btn" onclick="goBack()">Back</button>
+            <div id="adminStatus" class="status"></div>
+            <div id="attendanceList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config - UNGATHA PASTE PANNU DA
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxx",
+            authDomain: "atte-73d96.firebaseapp.com",
+            databaseURL: "https://atte-73d96-default-rtdb.firebaseio.com",
+            projectId: "atte-73d96",
+            storageBucket: "atte-73d96.appspot.com",
+            messagingSenderId: "286212566095",
+            appId: "1:286212566095:web:be1177cca497de36968e3a"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const STUDENT_PASSWORD = 'sun';
+        const ADMIN_PASSWORD = 'admin';
+
+        document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
+
+        function showStudentLogin() {
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('studentLoginSection').style.display = 'block';
+        }
+
+        function showCheckAttendance() {
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('checkAttendanceSection').style.display = 'block';
+        }
+
+        function showAdminLogin() {
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('adminSection').style.display = 'block';
+        }
+
+        function goBack() {
+            document.getElementById('homeSection').style.display = 'block';
+            document.getElementById('studentSection').style.display = 'none';
+            document.getElementById('adminSection').style.display = 'none';
+            document.getElementById('checkAttendanceSection').style.display = 'none';
+            document.getElementById('studentLoginSection').style.display = 'none';
+            document.getElementById('addStudentForm').style.display = 'none';
+        }
+
+        function studentLoginCheck() {
+            const pass = document.getElementById('studentPass').value;
+            const status = document.getElementById('studentLoginStatus');
+
+            if (pass === STUDENT_PASSWORD) {
+                status.textContent = 'Login Success!';
+                status.className = 'status success';
+                setTimeout(() => {
+                    document.getElementById('studentLoginSection').style.display = 'none';
+                    document.getElementById('studentSection').style.display = 'block';
+                    document.getElementById('studentPass').value = '';
+                    status.textContent = '';
+                    loadStudentList();
+                }, 500);
+            } else {
+                status.textContent = 'Wrong password da!';
+                status.className = 'status error';
+            }
+        }
+
+        function toggleAddStudent() {
+            const form = document.getElementById('addStudentForm');
+            form.style.display = form.style.display === 'none'? 'block' : 'none';
+        }
+
+        function addStudent() {
+            const name = document.getElementById('newStudentName').value.trim();
+            const roll = document.getElementById('newStudentRoll').value.trim();
+            const phone = document.getElementById('newStudentPhone').value.trim();
+            const studentClass = document.getElementById('newStudentClass').value.trim();
+            const photoFile = document.getElementById('newStudentPhoto').files[0];
+            const status = document.getElementById('studentStatus');
+
+            if (!name ||!roll) {
+                status.textContent = 'Name and Roll Number required da!';
+                status.className = 'status error';
+                return;
+            }
+
+            function saveStudent(photoData) {
+                database.ref('students').push({
+                    name: name,
+                    roll: roll,
+                    phone: phone || '',
+                    class: studentClass || '',
+                    photo: photoData || '',
+                    createdAt: new Date().toLocaleString()
+                }).then(() => {
+                    status.textContent = `${name} added successfully!`;
+                    status.className = 'status success';
+                    document.getElementById('newStudentName').value = '';
+                    document.getElementById('newStudentRoll').value = '';
+                    document.getElementById('newStudentPhone').value = '';
+                    document.getElementById('newStudentClass').value = '';
+                    document.getElementById('newStudentPhoto').value = '';
+                    document.getElementById('addStudentForm').style.display = 'none';
+                });
+            }
+
+            function proceedAfterCheck() {
+                if (photoFile) {
+                    status.textContent = 'Uploading photo...';
+                    status.className = 'status';
+                    const reader = new FileReader();
+                    reader.onload = () => saveStudent(reader.result);
+                    reader.onerror = () => {
+                        status.textContent = 'Photo upload failed, saving without photo.';
+                        status.className = 'status error';
+                        saveStudent('');
+                    };
+                    reader.readAsDataURL(photoFile);
+                } else {
+                    saveStudent('');
+                }
+            }
+
+            status.textContent = 'Checking roll number...';
+            status.className = 'status';
+
+            database.ref('students').once('value').then((snapshot) => {
+                const students = snapshot.val() || {};
+                const duplicate = Object.values(students).some(
+                    (s) => (s.roll || '').trim().toLowerCase() === roll.toLowerCase()
+                );
+
+                if (duplicate) {
+                    status.textContent = `Roll Number ${roll} already irukku da! Vera roll number podu.`;
+                    status.className = 'status error';
+                    return;
+                }
+
+                proceedAfterCheck();
+            });
+        }
+
+        function deleteStudent(id, name, selectedDate) {
+            if (!confirm(`Delete ${name}? This cannot be undone da!`)) return;
+            database.ref(`students/${id}`).remove().then(() => {
+                const statusEl = document.getElementById('studentStatus');
+                statusEl.textContent = `${name} deleted.`;
+                statusEl.className = 'status success';
+                setTimeout(() => statusEl.textContent = '', 2000);
+            });
+        }
+
+        function loadStudentList() {
+            const selectedDate = document.getElementById('attendanceDate').value;
+            if (!selectedDate) return;
+
+            const list = document.getElementById('studentList');
+
+            database.ref('students').on('value', (studentSnapshot) => {
+                const students = studentSnapshot.val();
+                if (!students) {
+                    list.innerHTML = '<p style="text-align:center; color:#666;">No students added yet. Click "Add Student List" to add.</p>';
+                    return;
+                }
+
+                database.ref(`attendance/${selectedDate}`).on('value', (attendanceSnapshot) => {
+                    const attendance = attendanceSnapshot.val() || {};
+                    let html = `<h3>Student List - ${selectedDate}</h3>`;
+
+                    Object.entries(students).forEach(([id, student]) => {
+                        const studentAttendance = attendance[id];
+                        let badge = '';
+                        if (studentAttendance === 'P') {
+                            badge = '<span class="attendance-badge present-badge">Present</span>';
+                        } else if (studentAttendance === 'A') {
+                            badge = '<span class="attendance-badge absent-badge">Absent</span>';
+                        }
+
+                        const avatar = student.photo
+                            ? `<img class="student-avatar" src="${student.photo}">`
+                            : `<div class="student-avatar-fallback">${(student.name || '?').charAt(0).toUpperCase()}</div>`;
+
+                        const metaBits = [];
+                        if (student.class) metaBits.push(student.class);
+                        if (student.phone) metaBits.push(student.phone);
+                        const meta = metaBits.length ? `<div class="student-meta">${metaBits.join(' · ')}</div>` : '';
+
+                        html += `
+                            <div class="student-item">
+                                ${avatar}
+                                <div class="student-info">
+                                    <div class="student-name">${student.name} ${badge}</div>
+                                    <div class="student-roll">Roll: ${student.roll}</div>
+                                    ${meta}
+                                </div>
+                                <div class="student-actions">
+                                    <button class="present-btn" onclick="markAttendance('${id}', 'P', '${selectedDate}')">P</button>
+                                    <button class="absent-btn" onclick="markAttendance('${id}', 'A', '${selectedDate}')">A</button>
+                                    <button class="delete-btn" onclick="deleteStudent('${id}', '${(student.name || '').replace(/'/g, "\\'")}')">🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    list.innerHTML = html;
+                });
+            });
+        }
+
+        function markAttendance(studentId, status, date) {
+            database.ref(`attendance/${date}/${studentId}`).set(status).then(() => {
+                const statusEl = document.getElementById('studentStatus');
+                statusEl.textContent = `Marked as ${status === 'P'? 'Present' : 'Absent'}`;
+                statusEl.className = 'status success';
+                setTimeout(() => statusEl.textContent = '', 2000);
+            });
+        }
+
+        async function checkMyAttendance() {
+            const rollNumber = document.getElementById('checkRollNumber').value.trim();
+            const resultDiv = document.getElementById('myAttendanceResult');
+            const status = document.getElementById('checkStatus');
+
+            if (!rollNumber) {
+                status.textContent = 'Roll Number enter pannu da!';
+                status.className = 'status error';
+                return;
+            }
+
+            status.textContent = 'Loading...';
+            status.className = 'status';
+
+            const studentsSnapshot = await database.ref('students').once('value');
+            const students = studentsSnapshot.val();
+
+            if (!students) {
+                status.textContent = 'No students found!';
+                status.className = 'status error';
+                return;
+            }
+
+            let studentId = null;
+            let studentName = '';
+            Object.entries(students).forEach(([id, student]) => {
+                if (student.roll === rollNumber) {
+                    studentId = id;
+                    studentName = student.name;
+                }
+            });
+
+            if (!studentId) {
+                status.textContent = 'Roll Number not found da!';
+                status.className = 'status error';
+                resultDiv.innerHTML = '';
+                return;
+            }
+
+            const attendanceSnapshot = await database.ref('attendance').once('value');
+            const allAttendance = attendanceSnapshot.val() || {};
+
+            let presentCount = 0;
+            let absentCount = 0;
+            let totalDays = 0;
+            let historyHTML = '<table><tr><th>Date</th><th>Status</th></tr>';
+
+            Object.entries(allAttendance).forEach(([date, dayAttendance]) => {
+                if (dayAttendance[studentId]) {
+                    totalDays++;
+                    if (dayAttendance[studentId] === 'P') {
+                        presentCount++;
+                        historyHTML += `<tr><td>${date}</td><td>Present</td></tr>`;
+                    } else if (dayAttendance[studentId] === 'A') {
+                        absentCount++;
+                        historyHTML += `<tr><td>${date}</td><td>Absent</td></tr>`;
+                    }
+                }
+            });
+            historyHTML += '</table>';
+
+            const percentage = totalDays > 0? ((presentCount / totalDays) * 100).toFixed(1) : 0;
+
+            resultDiv.innerHTML = `
+                <div class="stats-card">
+                    <h3>${studentName} — Roll ${rollNumber}</h3>
+                    <div class="ring-wrap">
+                        <div class="ring" style="background: conic-gradient(#ffffff ${percentage * 3.6}deg, rgba(255,255,255,0.18) 0deg)">
+                            <div class="ring-value">${percentage}%<span>ATTENDANCE</span></div>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-number">${presentCount}</div>
+                            <div class="stat-label">Present</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">${absentCount}</div>
+                            <div class="stat-label">Absent</div>
+                        </div>
+                    </div>
+                </div>
+                <h3>Attendance History</h3>
+                ${historyHTML}
+            `;
+            status.textContent = '';
+        }
+
+        function viewAttendance() {
+            const pass = document.getElementById('adminPass').value;
+            const status = document.getElementById('adminStatus');
+            const list = document.getElementById('attendanceList');
+
+            if (pass!== ADMIN_PASSWORD) {
+                status.textContent = 'Wrong password da!';
+                status.className = 'status error';
+                return;
+            }
+
+            status.textContent = 'Loading...';
+
+            database.ref('students').on('value', (studentSnapshot) => {
+                const students = studentSnapshot.val();
+                database.ref('attendance').on('value', (attendanceSnapshot) => {
+                    const allAttendance = attendanceSnapshot.val() || {};
+                    const dates = Object.keys(allAttendance).sort().reverse();
+
+                    let html = '<h3>All Students Attendance Summary</h3>';
+                    html += '<table><tr><th>Name</th><th>Roll</th><th>Present</th><th>Absent</th><th>%</th></tr>';
+
+                    if (students) {
+                        Object.entries(students).forEach(([id, student]) => {
+                            let presentCount = 0, absentCount = 0;
+                            dates.forEach(date => {
+                                if (allAttendance[date][id] === 'P') presentCount++;
+                                if (allAttendance[date][id] === 'A') absentCount++;
+                            });
+                            const total = presentCount + absentCount;
+                            const percentage = total > 0? ((presentCount / total) * 100).toFixed(1) : 0;
+
+                            html += `<tr>
+                                <td>${student.name}</td>
+                                <td>${student.roll}</td>
+                                <td>${presentCount}</td>
+                                <td>${absentCount}</td>
+                                <td>${percentage}%</td>
+                            </tr>`;
+                        });
+                    }
+                    html += '</table>';
+                    list.innerHTML = html;
+                    status.textContent = 'Data loaded';
+                    status.className = 'status success';
+                });
+            });
+        }
+    </script>
+</body>
+</html>
